@@ -14,17 +14,13 @@ export default function Home() {
   const [timer, setTimer] = useState(0);
   const timerRef = useRef(null);
 
-  // Returns a random number between 0 and 1.
   function randomSeed() {
     return Math.random();
   }
 
-  // Generate regions for the board.
   function generateRegions() {
     const regionCount = boardSize;
-    let newRegions = Array.from({ length: boardSize }, () =>
-      Array(boardSize).fill(null)
-    );
+    let newRegions = Array.from({ length: boardSize }, () => Array(boardSize).fill(null));
     let availableCells = [];
     for (let row = 0; row < boardSize; row++) {
       for (let col = 0; col < boardSize; col++) {
@@ -42,7 +38,6 @@ export default function Home() {
     return newRegions;
   }
 
-  // Backtracking solver to generate a complete solution.
   function solveBoard(tempBoard, row = 0) {
     if (row >= boardSize) return true;
     for (let col = 0; col < boardSize; col++) {
@@ -55,13 +50,10 @@ export default function Home() {
     return false;
   }
 
-  // Check if placing a queen is valid.
   function isValidMove(tempBoard, row, col) {
-    // Check row and column.
     for (let i = 0; i < boardSize; i++) {
       if (tempBoard[row][i] === "👑" || tempBoard[i][col] === "👑") return false;
     }
-    // Check region.
     const currentRegion = regions[row][col];
     for (let r = 0; r < boardSize; r++) {
       for (let c = 0; c < boardSize; c++) {
@@ -71,11 +63,8 @@ export default function Home() {
     return true;
   }
 
-  // Generate a new puzzle with some clues.
   function generatePuzzle() {
-    let emptyBoard = Array.from({ length: boardSize }, () =>
-      Array(boardSize).fill(null)
-    );
+    let emptyBoard = Array.from({ length: boardSize }, () => Array(boardSize).fill(null));
     let sol = deepCopy(emptyBoard);
     solveBoard(sol);
     let puzzle = deepCopy(emptyBoard);
@@ -91,7 +80,6 @@ export default function Home() {
     return { puzzle, sol };
   }
 
-  // Timer functions.
   function startTimer() {
     clearInterval(timerRef.current);
     setTimer(0);
@@ -100,7 +88,6 @@ export default function Home() {
     }, 1000);
   }
 
-  // Check if the player's board matches the solution.
   function checkWin(currentBoard) {
     for (let row = 0; row < boardSize; row++) {
       for (let col = 0; col < boardSize; col++) {
@@ -110,7 +97,6 @@ export default function Home() {
     return true;
   }
 
-  // Initialize a new game.
   function startNewGame() {
     const newRegions = generateRegions();
     setRegions(newRegions);
@@ -120,7 +106,6 @@ export default function Home() {
     startTimer();
   }
 
-  // Handle cell clicks.
   function handleCellClick(row, col) {
     let newBoard = deepCopy(board);
     if (newBoard[row][col] === "👑") {
@@ -134,7 +119,6 @@ export default function Home() {
       setTimeout(() => {
         alert(`🎉 You solved it in ${timer} seconds!`);
         setScore((prev) => prev + 1);
-        // Increase board size every 3 puzzles solved.
         if ((score + 1) % 3 === 0) {
           setBoardSize((prev) => prev + 1);
         }
@@ -143,12 +127,15 @@ export default function Home() {
     }
   }
 
-  // Start a new game on initial render or when boardSize changes.
   useEffect(() => {
     startNewGame();
     return () => clearInterval(timerRef.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boardSize]);
+
+  // Conditional render until board and regions are ready.
+  if (!board.length || !regions.length) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className={styles.container}>
@@ -163,26 +150,28 @@ export default function Home() {
         }}
       >
         {board.map((rowData, rowIndex) =>
-          rowData.map((cell, colIndex) => (
-            <div
-              key={`${rowIndex}-${colIndex}`}
-              className={`${styles.cell} ${
-                regions[rowIndex]
-                  ? styles[`region-${(regions[rowIndex][colIndex] % 4) + 1}`]
-                  : ""
-              }`}
-              onClick={() => handleCellClick(rowIndex, colIndex)}
-            >
-              {cell === "👑" ? "👑" : ""}
-            </div>
-          ))
+          rowData.map((cell, colIndex) => {
+            // Safeguard against undefined regions
+            const regionValue = regions[rowIndex] ? regions[rowIndex][colIndex] : 0;
+            return (
+              <div
+                key={`${rowIndex}-${colIndex}`}
+                className={`${styles.cell} ${styles[`region-${(regionValue % 4) + 1}`]}`}
+                onClick={() => handleCellClick(rowIndex, colIndex)}
+              >
+                {cell === "👑" ? "👑" : ""}
+              </div>
+            );
+          })
         )}
       </div>
-      <button onClick={() => {
-        setScore(0);
-        setBoardSize(5);
-        startNewGame();
-      }}>
+      <button
+        onClick={() => {
+          setScore(0);
+          setBoardSize(5);
+          startNewGame();
+        }}
+      >
         Reset
       </button>
     </div>
