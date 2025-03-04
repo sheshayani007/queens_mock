@@ -1,5 +1,5 @@
-services:
-    name: queens-game
+staticSites:
+  - name: queens-game
     branch: main
     buildCommand: "echo 'No build required'"
-    staticPublishPath: "."
+    publishPath: "."
