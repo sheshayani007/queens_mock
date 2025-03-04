@@ -1,0 +1,7 @@
+services:
+  - type: static
+    name: queens-game
+    env: static
+    branch: main
+    buildCommand: "echo 'No build required'"
+    staticPublishPath: "."
