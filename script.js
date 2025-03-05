@@ -1,101 +1,110 @@
-// Set the board size (5x5 grid)
-const boardSize = 5;
-let board = [];
+// Global variables
+const boardSize = 5; // 5x5 grid
+let board = [];      // 2D array to store queen placements
 
 /**
- * Initializes the game by creating a blank board and rendering it.
+ * Initializes the game by creating an empty 5x5 board and rendering it.
  */
 function initGame() {
-  console.log("Initializing game...");
-  // Create a 2D array (board) filled with null values
+  // Create a 5x5 array filled with null (no queens)
   board = Array.from({ length: boardSize }, () => Array(boardSize).fill(null));
+
   createBoard();
 }
 
 /**
- * Creates the game board grid in the DOM.
+ * Dynamically creates the HTML for the board and appends it to #game-board.
  */
 function createBoard() {
-  console.log("Generating game board...");
   const gameBoard = document.getElementById("game-board");
-  gameBoard.innerHTML = "";
-  // Adjust grid template dynamically based on boardSize
+  gameBoard.innerHTML = ""; // Clear any previous cells
+
+  // Set the CSS grid dimensions (in case you change boardSize)
   gameBoard.style.gridTemplateColumns = `repeat(${boardSize}, 60px)`;
   gameBoard.style.gridTemplateRows = `repeat(${boardSize}, 60px)`;
 
+  // Generate cells
   for (let row = 0; row < boardSize; row++) {
     for (let col = 0; col < boardSize; col++) {
       const cell = document.createElement("div");
       cell.classList.add("cell");
       cell.dataset.row = row;
       cell.dataset.col = col;
-      // Attach click handler for each cell
+      // Click event to handle placing/removing a queen
       cell.addEventListener("click", () => handleCellClick(row, col, cell));
-      cell.textContent = board[row][col] ? board[row][col] : "";
+
+      // If there's a queen in this position, display it
+      cell.textContent = board[row][col] === "👑" ? "👑" : "";
+
       gameBoard.appendChild(cell);
     }
   }
 }
 
 /**
- * Handles a click on a cell.
- * Toggles a queen in the cell if the move is valid.
+ * Handles a click on a cell:
+ * - If there's a queen, remove it.
+ * - Otherwise, place a queen if valid (no conflict).
  */
 function handleCellClick(row, col, cell) {
-  // If a queen is already present, remove it
   if (board[row][col] === "👑") {
+    // Remove the queen
     board[row][col] = null;
     cell.textContent = "";
-  } 
-  // Otherwise, check if placing a queen is a valid move
-  else if (isValidMove(row, col)) {
-    board[row][col] = "👑";
-    cell.textContent = "👑";
   } else {
-    alert("Invalid move! A queen already exists in the same row, column, or diagonal.");
+    // Check if it's valid to place a queen here
+    if (isValidMove(row, col)) {
+      board[row][col] = "👑";
+      cell.textContent = "👑";
+    } else {
+      alert("Invalid move! A queen already exists in the same row, column, or diagonal.");
+    }
   }
 }
 
 /**
  * Checks if placing a queen at (row, col) is valid.
- * Ensures no queen exists in the same row, column, or diagonals.
+ * No queen should be in the same row, column, or diagonal.
  */
 function isValidMove(row, col) {
-  // Check the row and column
+  // Check row and column
   for (let i = 0; i < boardSize; i++) {
-    if (board[row][i] === "👑" || board[i][col] === "👑") return false;
+    if (board[row][i] === "👑" || board[i][col] === "👑") {
+      return false;
+    }
   }
-  // Check the diagonals
-  // Upper-left diagonal
+
+  // Check diagonals
+  // Top-left diagonal
   for (let r = row, c = col; r >= 0 && c >= 0; r--, c--) {
     if (board[r][c] === "👑") return false;
   }
-  // Upper-right diagonal
+  // Top-right diagonal
   for (let r = row, c = col; r >= 0 && c < boardSize; r--, c++) {
     if (board[r][c] === "👑") return false;
   }
-  // Lower-left diagonal
+  // Bottom-left diagonal
   for (let r = row, c = col; r < boardSize && c >= 0; r++, c--) {
     if (board[r][c] === "👑") return false;
   }
-  // Lower-right diagonal
+  // Bottom-right diagonal
   for (let r = row, c = col; r < boardSize && c < boardSize; r++, c++) {
     if (board[r][c] === "👑") return false;
   }
-  return true;
+
+  return true; // No conflicts found
 }
 
 /**
  * Resets the game by reinitializing the board.
  */
 function resetGame() {
-  console.log("Resetting game...");
   initGame();
   console.log("Game has been reset!");
 }
 
-// Expose resetGame to the global scope so that it can be called from the HTML button.
+// Expose resetGame to the global scope so it can be called by the button
 window.resetGame = resetGame;
 
-// Start the game when the page loads.
+// Initialize the game when the DOM is loaded
 document.addEventListener("DOMContentLoaded", initGame);

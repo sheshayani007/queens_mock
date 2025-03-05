@@ -7,17 +7,13 @@
 </head>
 <body>
   <h1>Queens Game</h1>
-  <div id="game-board">
-    <!-- Game board is generated here -->
-  </div>
-  <!-- Reset button calls the global resetGame function -->
+  <!-- Game board container -->
+  <div id="game-board"></div>
+
+  <!-- Reset button -->
   <button onclick="resetGame()">Reset</button>
+
+  <!-- Include the JavaScript at the end of the body -->
   <script src="script.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      console.log("DOM fully loaded and parsed");
-      initializeGame();
-    });
-  </script>
 </body>
 </html>
