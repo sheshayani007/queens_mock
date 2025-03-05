@@ -13,5 +13,11 @@
   <!-- Reset button calls the global resetGame function -->
   <button onclick="resetGame()">Reset</button>
   <script src="script.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      console.log("DOM fully loaded and parsed");
+      initializeGame();
+    });
+  </script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-c// Set the board size (5x5 grid)
+// Set the board size (5x5 grid)
 const boardSize = 5;
 let board = [];
 
@@ -6,6 +6,7 @@ let board = [];
  * Initializes the game by creating a blank board and rendering it.
  */
 function initGame() {
+  console.log("Initializing game...");
   // Create a 2D array (board) filled with null values
   board = Array.from({ length: boardSize }, () => Array(boardSize).fill(null));
   createBoard();
@@ -15,6 +16,7 @@ function initGame() {
  * Creates the game board grid in the DOM.
  */
 function createBoard() {
+  console.log("Generating game board...");
   const gameBoard = document.getElementById("game-board");
   gameBoard.innerHTML = "";
   // Adjust grid template dynamically based on boardSize
@@ -87,6 +89,7 @@ function isValidMove(row, col) {
  * Resets the game by reinitializing the board.
  */
 function resetGame() {
+  console.log("Resetting game...");
   initGame();
   console.log("Game has been reset!");
 }
