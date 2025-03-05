@@ -1,3 +1,6 @@
+console.log("Script loaded")
+
+
 const boardSize = 5;
 let board = Array.from({ length: boardSize }, () => Array(boardSize).fill(null));
 const regions = [
